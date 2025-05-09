@@ -1,12 +1,18 @@
 {
   "name": "wacoalui",
-  "version": "1.0.5",
-  "description": "Reusable CSS for Waacoal Developer",
-  "main": "wacoaluicss.js",
+  "version": "1.0.17",
+  "description": "Reusable CSS for Wacoal Developer",
+  "main": "dist/wacoalcss.js",         
+  "type": "module",                   
   "scripts": {
+    "build": "rollup -c",             
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "wacoalbkk",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.40.2"
+  }
 }
