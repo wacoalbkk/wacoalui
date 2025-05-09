@@ -1,0 +1,12 @@
+{
+  "name": "wacoalui",
+  "version": "1.0.0",
+  "description": "Reusable CSS for Waacoal Developer",
+  "main": "dist/main.css",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "wacoalbkk",
+  "license": "ISC"
+}
