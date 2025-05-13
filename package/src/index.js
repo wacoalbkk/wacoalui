@@ -11,6 +11,7 @@ import Loading from './js/loading_page.js'
 import Notification from './js/notification.js'
 import Loadcss from './js/loadcss.js'
 
+import './js/wacoal_main.js';
 
 const Wacoalui = {
     AlertBox: function (options) {

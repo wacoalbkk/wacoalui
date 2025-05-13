@@ -1,8 +1,8 @@
 {
   "name": "wacoalui",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Reusable CSS for Wacoal Developer",
-  "main": "dist/wacoalcss.js",         
+  "main": "dist/wacoalui.js",         
   "type": "module",                   
   "scripts": {
     "build": "rollup -c",             
