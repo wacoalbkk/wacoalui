@@ -1,14 +1,14 @@
 
-import AlertBox from './js/alert.js'
-import Modalbox from './js/modal.js'
+import AlertBox from './alert.js'
+import Modalbox from './modal.js'
 // import setColor from './setcolor.ts'
-import setColor from './js/setcolor.js'
-import MenuDropdown from './js/menudropdown.js'
-import SetLoading from './js/loading.js'
-import Dropdown from './js/dropdown.js'
-import Tab from './js/tab.js'
-import Loading from './js/loading_page.js'
-import Notification from './js/notification.js'
+import setColor from './setcolor.js'
+import MenuDropdown from './menudropdown.js'
+import SetLoading from './loading.js'
+import Dropdown from './dropdown.js'
+import Tab from './tab.js'
+import Loading from './loading_page.js'
+import Notification from './notification.js'
 
 import './wacoal_main.js';
 
