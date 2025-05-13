@@ -1,40 +1,54 @@
-export function loadWacoalCss(token) {
-  let VALID_KEY;
+
+import AlertBox from './js/alert.js'
+import Modalbox from './js/modal.js'
+// import setColor from './setcolor.ts'
+import setColor from './js/setcolor.js'
+import MenuDropdown from './js/menudropdown.js'
+import SetLoading from './js/loading.js'
+import Dropdown from './js/dropdown.js'
+import Tab from './js/tab.js'
+import Loading from './js/loading_page.js'
+import Notification from './js/notification.js'
+import Loadcss from './js/loadcss.js'
 
 
-  if(token == ''){
-
-      // เช็คว่าใช้กับ Vite
-      if (typeof import.meta !== "undefined" && import.meta.env?.WACOALUI_TOKEN) {
-        VALID_KEY = import.meta.env.WACOALUI_TOKEN;
-      }
-
-      // ถ้าใช้ Create React App หรือ Webpack
-      if (!VALID_KEY && typeof process !== "undefined" && process.env?.WACOALUI_TOKEN) {
-        VALID_KEY = process.env.WACOALUI_TOKEN;
-      }
-
-      if (!VALID_KEY) {
-        console.error("❌ CSS Key not found in env");
-        return;
-      }
-      }else{
-        VALID_KEY = token;
-      }
-
-
-  
-    const href = `https://wacoalui.wacoal.co.th/wacoalUi/css/${VALID_KEY}`;
-  
-    if (document.querySelector(`link[href="${href}"]`)) {
-      console.warn("⚠️ CSS already loaded:", href);
-      return;
+const Wacoalui = {
+    AlertBox: function (options) {
+        return new AlertBox(options);
+    },
+    Modalbox: function (options) {
+        return new Modalbox(options);
+    },
+    setColor: function (options) {
+        return new setColor(options);
+    },
+    MenuDropdown: function (options) {
+        return new MenuDropdown(options);
+    },
+    SetLoading: function (options) {
+        return new SetLoading(options);
+    },
+    Dropdown: function (options) {
+        return new Dropdown(options);
+    },
+    Tab: function (options) {
+        return new Tab(options);
+    },
+    Loading:function(options) {
+        return new Loading(options);
+    },
+    Notification:function(options){
+        return new Notification(options);
     }
-  
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = href;
-    link.onload = () => console.log("✅ CSS loaded:", href);
-    link.onerror = () => console.error("❌ Failed to load CSS:", href);
-    document.head.appendChild(link);
-  }
+    ,Loadcss:function(options){
+      return new Loadcss(options);
+    }
+    
+};
+
+export default Wacoalui;
+
+
+
+
+
