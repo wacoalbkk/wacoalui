@@ -1,11 +1,15 @@
 {
   "name": "wacoalui",
-  "version": "1.0.19",
+  "version": "1.0.32",
   "description": "Reusable CSS for Wacoal Developer",
-  "main": "dist/wacoalui.js",         
-  "type": "module",                   
+  "main": "dist/wacoalui.js",
+  "bin": {
+    "wacoalui-init": "./create-template.js"
+  },
+  "type": "module",
   "scripts": {
-    "build": "rollup -c",             
+    "build": "rollup -c",
+    "create-template": "node create-template.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,5 +18,8 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.1",
     "rollup": "^4.40.2"
+  },
+  "dependencies": {
+    "wacoalui": "^1.0.32"
   }
 }
