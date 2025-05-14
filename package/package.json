@@ -1,6 +1,6 @@
 {
   "name": "wacoalui",
-  "version": "1.0.32",
+  "version": "1.0.34",
   "description": "Reusable CSS for Wacoal Developer",
   "main": "dist/wacoalui.js",
   "bin": {
@@ -20,6 +20,6 @@
     "rollup": "^4.40.2"
   },
   "dependencies": {
-    "wacoalui": "^1.0.32"
+    "wacoalui": "^1.0.34"
   }
 }

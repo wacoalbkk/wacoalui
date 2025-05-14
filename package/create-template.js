@@ -13,7 +13,7 @@ function create() {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const targetDir = path.resolve(__dirname, '../../../public/wacoalui');
+const targetDir = path.resolve(__dirname, '../../public/wacoalui');
 const targetFile = path.join(targetDir, 'template.html');
 
 console.log(targetDir);
