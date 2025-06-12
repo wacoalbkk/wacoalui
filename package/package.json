@@ -1,10 +1,10 @@
 {
   "name": "wacoalui",
-  "version": "1.0.34",
+  "version": "1.0.36",
   "description": "Reusable CSS for Wacoal Developer",
   "main": "dist/wacoalui.js",
   "bin": {
-    "wacoalui-init": "./create-template.js"
+    "wacoalui-template-init": "./create-template.js"
   },
   "type": "module",
   "scripts": {
@@ -20,6 +20,6 @@
     "rollup": "^4.40.2"
   },
   "dependencies": {
-    "wacoalui": "^1.0.34"
+    "wacoalui": "^1.0.35"
   }
 }

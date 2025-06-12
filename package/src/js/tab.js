@@ -22,10 +22,7 @@ class Tab {
             //   console.log("data-namebody:", nameBody);
             //   console.log("data-tabcontent (from parent):", tabContent);
 
-            
-         
-
-
+          
               const target = document.querySelector(`.tab-body[data-tabcontent="${tabContent}"]`);
 
               if (!target) return;

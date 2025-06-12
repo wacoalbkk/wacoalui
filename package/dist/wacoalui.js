@@ -1,3 +1,5 @@
+import '@/pages/docs/dropdown';
+
 class AlertBox {
 
  
@@ -201,75 +203,81 @@ class Modalbox{
 
     createModal(){
       
-        document.querySelectorAll('.modal-link').forEach((modaldata)=>{
-            modaldata.addEventListener('click', () => {
-                let name = modaldata.getAttribute("data-modal");
-                let fade = modaldata.getAttribute("data-fade");
-                console.log(name);
+       document.querySelectorAll('.modal-link').forEach((modaldata)=>{
+    modaldata.addEventListener('click', () => {
+        let name = modaldata.getAttribute("data-modal");
+        let fade = modaldata.getAttribute("data-fade");
+        console.log(name);
+        
+        if(name){
+           const position =  modaldata.getAttribute('data-position');
+            console.log(position);
+            
+           if(position){
+            const modalbox = document.getElementById(name);
+                modalbox.classList.add('modal-slide-show');
+                modalbox.classList.add(`modal-slide-${position}`);
+                setTimeout(() => {
+                modalbox.classList.add(`modal-slide-show-${position}`);
+                }, 50);
+           }else {
+            const modalbox = document.getElementById(name);
+            modalbox.style.display = 'block';
+                    setTimeout(() => {
+                     modalbox.classList.add('show-modal');
+                    }, 100);
+           }
+        //    เปิด fade
+           if(fade){
+            const body = document.body;
+            const html = `<div class="modal-fade" id='fade${name}'></div>`;
+            body.insertAdjacentHTML('beforeend', html);
+            setTimeout(() => {
+                const fadelist = document.getElementById(`fade${name}`);
+                    fadelist.classList.add('show-modal-fade');
+            }, 50);
+
+        }
+
+          
+        }                
+    });
+});
+
+
+document.body.addEventListener('click', (event) => {
+    const closeButton = event.target.closest('[data-closemodal]');
+    if (closeButton) {
+        const modalBox = closeButton.closest('.modal-wrap');
+        const modalBox_slide = closeButton.closest('.modal-slide-wrap');
                 
-                if(name){
-                   const position =  modaldata.getAttribute('data-position');
-                    console.log(position);
-                    
-                   if(position){
-                    const modalbox = document.getElementById(name);
-                        modalbox.classList.add('modal-slide-show');
-                        modalbox.classList.add(`modal-slide-${position}`);
-                        setTimeout(() => {
-                        modalbox.classList.add(`modal-slide-show-${position}`);
-                        }, 50);
-                   }else {
-                    const modalbox = document.getElementById(name);
-                    modalbox.classList.add('show-modal');
-                   }
-                //    เปิด fade
-                   if(fade){
-                    const body = document.body;
-                    const html = `<div class="modal-fade" id='fade${name}'></div>`;
-                    body.insertAdjacentHTML('beforeend', html);
-                    setTimeout(() => {
-                        const fadelist = document.getElementById(`fade${name}`);
-                            fadelist.classList.add('show-modal-fade');
-                    }, 50);
-
-                }
-
-                  
-                }                
-            });
+        if(modalBox){
+            modalBox.classList.remove('show-modal');
+             setTimeout(() => {
+                       modalBox.style.display = ''; 
+            }, 300);
+        }
+        if(modalBox_slide){
+            modalBox_slide.classList.remove('modal-slide-show');
+            setTimeout(() => {
+                modalBox_slide.classList.remove('modal-slide-show-left');
+                modalBox_slide.classList.remove('modal-slide-show-right');
+            }, 50);
+            setTimeout(() => {
+                modalBox_slide.classList.remove('modal-slide-left');
+                modalBox_slide.classList.remove('modal-slide-right');
+            }, 350);
+            
+        }
+        document.querySelectorAll('.modal-fade').forEach((fade)=>{
+            fade.classList.remove('show-modal-fade');
+            setTimeout(() => {
+                fade.remove();
+            }, 300);
         });
-
-
-        document.body.addEventListener('click', (event) => {
-            const closeButton = event.target.closest('[data-closemodal]');
-            if (closeButton) {
-                const modalBox = closeButton.closest('.modal-wrap');
-                const modalBox_slide = closeButton.closest('.modal-slide-wrap');
-                        
-                if(modalBox){
-                    modalBox.classList.remove('show-modal');
-                }
-                if(modalBox_slide){
-                    modalBox_slide.classList.remove('modal-slide-show');
-                    setTimeout(() => {
-                        modalBox_slide.classList.remove('modal-slide-show-left');
-                        modalBox_slide.classList.remove('modal-slide-show-right');
-                    }, 50);
-                    setTimeout(() => {
-                        modalBox_slide.classList.remove('modal-slide-left');
-                        modalBox_slide.classList.remove('modal-slide-right');
-                    }, 350);
-                    
-                }
-                document.querySelectorAll('.modal-fade').forEach((fade)=>{
-                    fade.classList.remove('show-modal-fade');
-                    setTimeout(() => {
-                        fade.remove();
-                    }, 300);
-                });
-                
-            }
-        });
+        
+    }
+});
 
         
     }
@@ -284,50 +292,291 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
-class setColor{
+class Animate {
+    constructor({ icon = '' }) {
+        // this.name = name;
+        this.createAnimate();
+    }
 
+    createAnimate() {
+        const animationDuration = 3000;
+        const frameDuration = 1000 / 60;
+        const totalFrames = Math.round(animationDuration / frameDuration);
+        const easeOutQuad = (t) => t * (2 - t);
 
-    constructor({ maincolor = "", subcolor="",maintextcolor = "", subtextcolor="",bodycolor="",autoTheme=false}) {
-        this.maincolor = maincolor || '#202020';
-        this.subcolor = subcolor || '#646464';
-        this.maintextcolor = maintextcolor || '#202020';
-        this.subtextcolor = subtextcolor || '#646464';
-        this.bodycolor = bodycolor || '#ffffff';
-        this.autoTheme = autoTheme;
+        // ฟังก์ชันสำหรับการ run animation
+        function animateCountUp(el) {
+            let breaktype = el.getAttribute("data-break");
+            let frame = 0;
 
-        
-        this.createColor();
-    }   
+            if (breaktype === 'comma') {
+                let rawValue = el.innerHTML.replace(/,/g, '');
+                const countTo = parseFloat(rawValue);
+                const hasDecimal = rawValue.includes('.');
+                const decimalPart = hasDecimal ? rawValue.split('.')[1] : '';
+                const digit = decimalPart.length;
 
-    createColor(){
-        document.documentElement.style.setProperty('--main-color', this.maincolor);
-        document.documentElement.style.setProperty('--sub-color', this.subcolor);
-        document.documentElement.style.setProperty('--main-text-color', this.maintextcolor);
-        document.documentElement.style.setProperty('--sub-text-color', this.subtextcolor);
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = easeOutQuad(frame / totalFrames);
+                    const currentCount = countTo * progress;
 
-        if(this.autoTheme == true){
-            function setThemeBasedOnTime() {
-                const now = new Date();
-                const hours = now.getHours(); // เวลาเป็นชั่วโมง (0 - 23)
-                // เช็คว่าเวลาปัจจุบันอยู่ระหว่าง 06:00 - 18:00 หรือไม่
-                if (hours >= 6 && hours < 18) {
-                      // โหมดกลางวัน
-                        document.documentElement.style.setProperty('--body-color', '#ffffff'); // สีขาว (โหมดกลางวัน)
-                } else {
-                     // โหมดกลางคืน
-                     document.documentElement.style.setProperty('--body-color', '#111214'); // สีดำ (โหมดกลางคืน)
-                     document.documentElement.style.setProperty('--main-text-color', '#ffffff');
-                     document.documentElement.style.setProperty('--sub-text-color', '#ffffff');
+                    const localeOptions = hasDecimal
+                        ? {
+                            minimumFractionDigits: digit,
+                            maximumFractionDigits: digit,
+                        }
+                        : {};
 
-                   
-                }
+                    el.innerHTML = currentCount.toLocaleString('en-US', localeOptions);
+
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                    }
+                }, frameDuration);
+
+            } else if (breaktype === 'dot') {
+                let digit = el.getAttribute("data-digit") || 1;
+                const countTo = parseFloat(el.innerHTML.replace(/,/g, ''));
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = easeOutQuad(frame / totalFrames);
+                    const currentCount = countTo * progress;
+                    el.innerHTML = currentCount.toLocaleString('en-US', {
+                        minimumFractionDigits: digit,
+                        maximumFractionDigits: digit,
+                    });
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                    }
+                }, frameDuration);
+
+            } else {
+                const countTo = parseInt(el.innerHTML, 10);
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = easeOutQuad(frame / totalFrames);
+                    const currentCount = Math.round(countTo * progress);
+                    el.innerHTML = currentCount;
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                    }
+                }, frameDuration);
             }
+        }
+
+        // เริ่มใช้ IntersectionObserver
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCountUp(entry.target); // เริ่ม animation
+                    observer.unobserve(entry.target); // ทำครั้งเดียว
+                }
+            });
+        }, { threshold: 0.5 }); // ปรับ threshold ตามต้องการ
+
+        // สมัคร observer ให้ทุก .timer
+        document.querySelectorAll('.timer').forEach(el => {
+            observer.observe(el);
+        });
+
+        // console.log(countupEls);
+
+
+        // countupEls.forEach(animateCountUp);
+    }
+}
+
+class Dropdown {
+
+
+    constructor({ icon = "" }) {
+        // this.name = name;
+        this.createDropdown();
+    }
+
+    createDropdown() {
+
+
+        document.querySelectorAll(".dropdown-link").forEach((menu) => {
+            menu.addEventListener("click", function () {
+                const name = this.getAttribute("data-name");
+                const menucontent = document.getElementById(name);
+                menucontent.scrollHeight;
+                const Widthmenu = menucontent.scrollWidth;
+                const boxwidth = menu.scrollWidth;
+
+                let counts = 0;
+                menucontent.querySelectorAll("li").forEach((dropbox, index) => {
+                    counts += 1;
+                });
+
+                if (menu.classList.contains("dropdown-active")) {
+                    menu.classList.remove("dropdown-active");
+                    menucontent.classList.remove("dropdown-show");
+                    menucontent.style.height = "";
+                    menucontent.style.width = "";
+                    setTimeout(() => {
+                        menucontent.classList.remove("left-0", "right-0");
+
+                    }, 300);
+
+                } else {
+                    menu.classList.add("dropdown-active");
+                    menucontent.classList.add("dropdown-show");
+                    menucontent.style.height = 34 * counts + 20 + "px";
+
+                    if (Widthmenu < boxwidth) {
+                        menucontent.style.width = boxwidth + 20 + "px";
+                    } else {
+                        menucontent.style.width = Widthmenu + 20 + "px";
+                    }
+
+                    // ตรวจสอบตำแหน่งของ element
+                    const rect = menu.getBoundingClientRect();
+                    const windowWidth = window.innerWidth;
+
+                    // ลบ class ก่อนเพิ่มใหม่
+                    menucontent.classList.remove("left-0", "right-0");
+
+                    if (rect.left < 100) {
+                        // ใกล้ด้านซ้าย
+                        menucontent.classList.add("left-0");
+                    } else if (windowWidth - rect.right < 100) {
+                        // ใกล้ด้านขวา
+                        menucontent.classList.add("right-0");
+                    }
+                }
+            });
+        });
+
+
+    }
+}
+
+// ปิดเมื่อกด ESC
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        document.getElementById("custom-alert")?.classList.remove("show");
+    }
+});
+
+class Loadcss {
+  constructor({ token = "" }) {
+    this.token = token || '';
+    this.createLoadCSS();
+  }
+  createLoadCSS() {
+    let VALID_KEY;
+
+    let token = this.token;
+    if (token == '') {
+
+      // เช็คว่าใช้กับ Vite
+      if (typeof import.meta !== "undefined" && import.meta.env?.WACOALUI_TOKEN) {
+        VALID_KEY = import.meta.env.WACOALUI_TOKEN;
+      }
+
+      // ถ้าใช้ Create React App หรือ Webpack
+      if (!VALID_KEY && typeof process !== "undefined" && process.env?.WACOALUI_TOKEN) {
+        VALID_KEY = process.env.WACOALUI_TOKEN;
+      }
+
+      if (!VALID_KEY) {
+        console.error("❌ CSS Key not found in env");
+        return;
+      }
+    } else {
+      VALID_KEY = token;
+    }
+
+
+
+    const href = `https://wacoalui.wacoal.co.th/wacoalUi/css/${VALID_KEY}`;
+
+    if (document.querySelector(`link[href="${href}"]`)) {
+      console.warn("⚠️ CSS already loaded:", href);
+      return;
+    }
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    link.onload = () => console.log("✅ CSS loaded:", href);
+    link.onerror = () => console.error("❌ Failed to load CSS:", href);
+    document.head.appendChild(link);
+  }
+}
+
+class SetLoading {
+
+    constructor({ MaincolorLoading = "", SubcolorLoading = "", colorLoading2 = "", colorLoading3 = "", colorLoading4 = "", EventpageLoad = "" }) {
+        this.MaincolorLoading = MaincolorLoading || '#2c2c2c';
+        this.SubcolorLoading = SubcolorLoading || '#dbdcef';
+        this.colorLoading2 = colorLoading2 || '#ff4545';
+        this.colorLoading3 = colorLoading3 || '#ffbf47';
+        this.colorLoading4 = colorLoading4 || '#a6ff7c';
+        this.EventpageLoad = EventpageLoad || 'false';
+        this.createSetLoading();
+    }
+
+    createSetLoading() {
+        // Set custom CSS properties for colors
+        document.documentElement.style.setProperty('--main-loading-color', this.MaincolorLoading);
+        document.documentElement.style.setProperty('--sub-loading-color', this.SubcolorLoading);
+        document.documentElement.style.setProperty('--loading-color-2', this.colorLoading2);
+        document.documentElement.style.setProperty('--loading-color-3', this.colorLoading3);
+        document.documentElement.style.setProperty('--loading-color-4', this.colorLoading4);
+
+        // If EventpageLoad is true, show a loading page
+        if (this.EventpageLoad === 'true') {
+            const htmlload = `<div class='loadpage loadshow' id="loadpage">
+            <div class="spinner-cube">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                </div>
+                </div>`;
+            const body = document.body;
+            body.insertAdjacentHTML('afterbegin', htmlload);
+
+            window.addEventListener("load", function () {
+                const loadpage = document.getElementById('loadpage');
+                loadpage.classList.remove('loadshow');
+
+                setTimeout(() => {
+                    loadpage.remove();
+                }, 300);
+            });
           
-            setThemeBasedOnTime();
-            // อัพเดททุกๆ 10 นาที (600000 ms) เพื่อให้ตรวจสอบเวลาซ้ำ
-            setInterval(setThemeBasedOnTime, 600000);
+        }
+    }
+}
+
+class Loading {
+
+    constructor({show = ""}) {
+        this.show = show || false;
+        this.createLoading();
+    }
+
+    createLoading() {
+       
+        if(this.show){
+            document.querySelectorAll(".load_wrap").forEach((load,index) => {
+                if(index == 0){
+                    load.classList.add('load_show');
+                }
+            });
+
         }else {
-            document.documentElement.style.setProperty('--body-color', this.bodycolor);
+            document.querySelectorAll(".load_wrap").forEach((load,index) => {
+                load.classList.remove('load_show');
+
+            });
         }
     }
 }
@@ -398,132 +647,126 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
-class SetLoading {
+class Notification {
 
-    constructor({ MaincolorLoading = "", SubcolorLoading = "", colorLoading2 = "", colorLoading3 = "", colorLoading4 = "", EventpageLoad = "" }) {
-        this.MaincolorLoading = MaincolorLoading || '#2c2c2c';
-        this.SubcolorLoading = SubcolorLoading || '#dbdcef';
-        this.colorLoading2 = colorLoading2 || '#ff4545';
-        this.colorLoading3 = colorLoading3 || '#ffbf47';
-        this.colorLoading4 = colorLoading4 || '#a6ff7c';
-        this.EventpageLoad = EventpageLoad || 'false';
-        this.createSetLoading();
+    constructor() {
+        this.createNotification();
     }
 
-    createSetLoading() {
-        // Set custom CSS properties for colors
-        document.documentElement.style.setProperty('--main-loading-color', this.MaincolorLoading);
-        document.documentElement.style.setProperty('--sub-loading-color', this.SubcolorLoading);
-        document.documentElement.style.setProperty('--loading-color-2', this.colorLoading2);
-        document.documentElement.style.setProperty('--loading-color-3', this.colorLoading3);
-        document.documentElement.style.setProperty('--loading-color-4', this.colorLoading4);
-
-        // If EventpageLoad is true, show a loading page
-        if (this.EventpageLoad === 'true') {
-            const htmlload = `<div class='loadpage loadshow' id="loadpage">
-            <div class="spinner-cube">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                </div>
-                </div>`;
-            const body = document.body;
-            body.insertAdjacentHTML('afterbegin', htmlload);
-
-            window.addEventListener("load", function () {
-                const loadpage = document.getElementById('loadpage');
-                loadpage.classList.remove('loadshow');
-
-                setTimeout(() => {
-                    loadpage.remove();
-                }, 300);
+    createNotification() {
+       
+        document.querySelectorAll(".notification-btn").forEach((notification) => {
+            notification.addEventListener('click', () => {
+                const notiname = notification.getAttribute("data-notification");
+                const notibox = document.getElementById(notiname);
+                if(notibox){
+                        if(notibox.classList.contains('show-notification')){
+                            notibox.classList.remove('show-notification');
+                        }else {
+                            notibox.classList.add('show-notification');
+                        }
+                }
+        
             });
+        });
+        
+        document.querySelectorAll(".notification-close").forEach((notificationclose) => {
+            notificationclose.addEventListener('click', () => {
+                    document.querySelectorAll(".notification").forEach((notification) => {
+        
+                        if(notification.classList.contains('show-notification')){
+                            notification.classList.remove('show-notification');
+                        }
+                        
+                    });
+        
+            });
+        });
+
+
+    }
+}
+
+class setColor{
+
+
+    constructor({ maincolor = "", subcolor="",maintextcolor = "", subtextcolor="",bodycolor="",autoTheme=false}) {
+        this.maincolor = maincolor || '#202020';
+        this.subcolor = subcolor || '#646464';
+        this.maintextcolor = maintextcolor || '#202020';
+        this.subtextcolor = subtextcolor || '#646464';
+        this.bodycolor = bodycolor || '#ffffff';
+        this.autoTheme = autoTheme;
+
+        
+        this.createColor();
+    }   
+
+    createColor(){
+        document.documentElement.style.setProperty('--main-color', this.maincolor);
+        document.documentElement.style.setProperty('--sub-color', this.subcolor);
+        document.documentElement.style.setProperty('--main-text-color', this.maintextcolor);
+        document.documentElement.style.setProperty('--sub-text-color', this.subtextcolor);
+
+        if(this.autoTheme == true){
+            function setThemeBasedOnTime() {
+                const now = new Date();
+                const hours = now.getHours(); // เวลาเป็นชั่วโมง (0 - 23)
+                // เช็คว่าเวลาปัจจุบันอยู่ระหว่าง 06:00 - 18:00 หรือไม่
+                if (hours >= 6 && hours < 18) {
+                      // โหมดกลางวัน
+                        document.documentElement.style.setProperty('--body-color', '#ffffff'); // สีขาว (โหมดกลางวัน)
+                } else {
+                     // โหมดกลางคืน
+                     document.documentElement.style.setProperty('--body-color', '#111214'); // สีดำ (โหมดกลางคืน)
+                     document.documentElement.style.setProperty('--main-text-color', '#ffffff');
+                     document.documentElement.style.setProperty('--sub-text-color', '#ffffff');
+
+                   
+                }
+            }
           
+            setThemeBasedOnTime();
+            // อัพเดททุกๆ 10 นาที (600000 ms) เพื่อให้ตรวจสอบเวลาซ้ำ
+            setInterval(setThemeBasedOnTime, 600000);
+        }else {
+            document.documentElement.style.setProperty('--body-color', this.bodycolor);
         }
     }
 }
 
-class Dropdown {
+class Slider {
+    constructor({}) {
+        this.createSlider();
+    }
 
+    createSlider() {
+        document.querySelectorAll('.slider').forEach((slider) => {            
+             const valueDisplay = slider.nextElementSibling;
+            const rootStyle = getComputedStyle(document.documentElement);
+            const mainColor = rootStyle.getPropertyValue('--main-color').trim();
+            const subColor = '#ffffff'; // หรือใช้ CSS var ได้เช่นกัน
 
-    constructor({ icon = ""}) {
-        // this.name = name;
-        this.createDropdown();
-    }  
-
-    createDropdown(){
- 
-
-    document.querySelectorAll(".dropdown-link").forEach((menu) => {
-      
-        menu.addEventListener("click", function () {
-
-            console.log(menu);
-            
-            
-            const name = this.getAttribute("data-name"); // หรือ this.dataset.name
-            const menucontent = document.getElementById(name);
-            menucontent.scrollHeight;
-            const Widthmenu = menucontent.scrollWidth;
-            const boxwidth = menu.scrollWidth;
-           
-            let counts = 0;
-            menucontent.querySelectorAll('li').forEach((dropbox,index) => {
-                counts = counts +1;
-            });
-
-     
-            
-
-            
-            console.log(boxwidth);
-            console.log(Widthmenu);
-            
-            // const isOpen = menucontent.classList.contains('show');
-            // const showicon = menu.classList.contains('showicon');
-
-          
-            if(menu.classList.contains('dropdown-active')){
-                menu.classList.remove('dropdown-active');
-                menucontent.classList.remove('dropdown-show');
-                menucontent.style.height = '';
-                menucontent.style.width = '';
-
-            }else {
-                menu.classList.add('dropdown-active');
-                menucontent.classList.add('dropdown-show');
-                menucontent.style.height = ((34 * counts)+20)+'px';
-
-                if(Widthmenu < boxwidth ){
-                    menucontent.style.width = (boxwidth + 20)+'px';
-
-                }else {
-                    menucontent.style.width = (Widthmenu + 20)+'px';
-
-                }
-
-
+            function calcValue() {
+                const valuePercentage = (slider.value / slider.max) * 100;
+                slider.style.background = `linear-gradient(to right, ${mainColor} ${valuePercentage}%, ${subColor} ${valuePercentage}%)`;
+                if (valueDisplay) valueDisplay.textContent = slider.value;
             }
 
+            // เรียกครั้งแรกเพื่อให้มี background ถูกต้องตอนโหลด
+            calcValue();
+
+            // ผูก event 'input' เพียงครั้งเดียว
+            slider.addEventListener('input', () => {
+                calcValue();
+            });
 
 
-          
         });
-      });
-
+      
 
     }
 }
-
-// ปิดเมื่อกด ESC
-document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-        document.getElementById("custom-alert")?.classList.remove("show");
-    }
-});
 
 class Tab {
     constructor({ icon = ""}) {
@@ -549,10 +792,7 @@ class Tab {
             //   console.log("data-namebody:", nameBody);
             //   console.log("data-tabcontent (from parent):", tabContent);
 
-            
-         
-
-
+          
               const target = document.querySelector(`.tab-body[data-tabcontent="${tabContent}"]`);
 
               if (!target) return;
@@ -610,119 +850,118 @@ class Tab {
   
 }
 
-class Loading {
-
-    constructor({show = ""}) {
-        this.show = show || false;
-        this.createLoading();
+class Menuhide {
+    constructor({ icon = '' }) {
+        // this.name = name;
+        this.createMenuhide();
     }
 
-    createLoading() {
-       
-        if(this.show){
-            document.querySelectorAll(".load_wrap").forEach((load,index) => {
-                if(index == 0){
-                    load.classList.add('load_show');
+    createMenuhide() {
+        document.querySelectorAll('.menu-hide-btn').forEach((menus)=>{
+            menus.addEventListener('click',function(){
+                let namemenu = menus.getAttribute('data-menuhide');
+                if(namemenu){
+                    const menuel = document.getElementById(namemenu);
+                    if(menuel){
+                       if(menuel.classList.contains('menuhide')){
+                        menuel.classList.remove('menuhide');
+                        setTimeout(() => {
+                        menuel.classList.remove('hide-text');
+                        }, 300);
+                       
+                       }else {
+                        menuel.classList.add('menuhide');
+                        menuel.classList.add('hide-text');
+                       }
+                       
+                    }
                 }
             });
-
-        }else {
-            document.querySelectorAll(".load_wrap").forEach((load,index) => {
-                load.classList.remove('load_show');
-
-            });
-        }
+            
+        });
     }
 }
 
-class Notification {
+const animationDuration = 3000;
+        const frameDuration = 1000 / 60;
+        const totalFrames = Math.round(animationDuration / frameDuration);
+        const easeOutQuad = (t) => t * (2 - t);
 
-    constructor() {
-        this.createNotification();
-    }
+        // ฟังก์ชันสำหรับการ run animation
+        function animateCountUp(el) {
+            let breaktype = el.getAttribute("data-break");
+            let frame = 0;
 
-    createNotification() {
-       
-        document.querySelectorAll(".notification-btn").forEach((notification) => {
-            notification.addEventListener('click', () => {
-                const notiname = notification.getAttribute("data-notification");
-                const notibox = document.getElementById(notiname);
-                if(notibox){
-                        if(notibox.classList.contains('show-notification')){
-                            notibox.classList.remove('show-notification');
-                        }else {
-                            notibox.classList.add('show-notification');
+            if (breaktype === 'comma') {
+                let rawValue = el.innerHTML.replace(/,/g, '');
+                const countTo = parseFloat(rawValue);
+                const hasDecimal = rawValue.includes('.');
+                const decimalPart = hasDecimal ? rawValue.split('.')[1] : '';
+                const digit = decimalPart.length;
+
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = easeOutQuad(frame / totalFrames);
+                    const currentCount = countTo * progress;
+
+                    const localeOptions = hasDecimal
+                        ? {
+                            minimumFractionDigits: digit,
+                            maximumFractionDigits: digit,
                         }
-                }
-        
-            });
-        });
-        
-        document.querySelectorAll(".notification-close").forEach((notificationclose) => {
-            notificationclose.addEventListener('click', () => {
-                    document.querySelectorAll(".notification").forEach((notification) => {
-        
-                        if(notification.classList.contains('show-notification')){
-                            notification.classList.remove('show-notification');
-                        }
-                        
+                        : {};
+
+                    el.innerHTML = currentCount.toLocaleString('en-US', localeOptions);
+
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                    }
+                }, frameDuration);
+
+            } else if (breaktype === 'dot') {
+                let digit = el.getAttribute("data-digit") || 1;
+                const countTo = parseFloat(el.innerHTML.replace(/,/g, ''));
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = easeOutQuad(frame / totalFrames);
+                    const currentCount = countTo * progress;
+                    el.innerHTML = currentCount.toLocaleString('en-US', {
+                        minimumFractionDigits: digit,
+                        maximumFractionDigits: digit,
                     });
-        
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                    }
+                }, frameDuration);
+
+            } else {
+                const countTo = parseInt(el.innerHTML, 10);
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = easeOutQuad(frame / totalFrames);
+                    const currentCount = Math.round(countTo * progress);
+                    el.innerHTML = currentCount;
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                    }
+                }, frameDuration);
+            }
+        }
+
+        // เริ่มใช้ IntersectionObserver
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCountUp(entry.target); // เริ่ม animation
+                    observer.unobserve(entry.target); // ทำครั้งเดียว
+                }
             });
+        }, { threshold: 0.5 }); // ปรับ threshold ตามต้องการ
+
+        // สมัคร observer ให้ทุก .timer
+        document.querySelectorAll('.timer').forEach(el => {
+            observer.observe(el);
         });
-
-
-    }
-}
-
-class Loadcss {
-  constructor({ token = "" }) {
-    this.token = token || '';
-    this.createLoadCSS();
-  }
-  createLoadCSS() {
-    let VALID_KEY;
-
-    let token = this.token;
-    if (token == '') {
-
-      // เช็คว่าใช้กับ Vite
-      if (typeof import.meta !== "undefined" && import.meta.env?.WACOALUI_TOKEN) {
-        VALID_KEY = import.meta.env.WACOALUI_TOKEN;
-      }
-
-      // ถ้าใช้ Create React App หรือ Webpack
-      if (!VALID_KEY && typeof process !== "undefined" && process.env?.WACOALUI_TOKEN) {
-        VALID_KEY = process.env.WACOALUI_TOKEN;
-      }
-
-      if (!VALID_KEY) {
-        console.error("❌ CSS Key not found in env");
-        return;
-      }
-    } else {
-      VALID_KEY = token;
-    }
-
-
-
-    const href = `https://wacoalui.wacoal.co.th/wacoalUi/css/${VALID_KEY}`;
-
-    if (document.querySelector(`link[href="${href}"]`)) {
-      console.warn("⚠️ CSS already loaded:", href);
-      return;
-    }
-
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = href;
-    link.onload = () => console.log("✅ CSS loaded:", href);
-    link.onerror = () => console.error("❌ Failed to load CSS:", href);
-    document.head.appendChild(link);
-  }
-}
-
-//nav-bobile
 
 document.querySelectorAll(".nav-mobile-icon").forEach((menu) => {
     menu.addEventListener('click', () => {
@@ -792,7 +1031,10 @@ document.querySelectorAll('.modal-link').forEach((modaldata)=>{
                 }, 50);
            }else {
             const modalbox = document.getElementById(name);
-            modalbox.classList.add('show-modal');
+            modalbox.style.display = 'block';
+                    setTimeout(() => {
+                     modalbox.classList.add('show-modal');
+                    }, 100);
            }
         //    เปิด fade
            if(fade){
@@ -820,6 +1062,9 @@ document.body.addEventListener('click', (event) => {
                 
         if(modalBox){
             modalBox.classList.remove('show-modal');
+             setTimeout(() => {
+                       modalBox.style.display = ''; 
+            }, 300);
         }
         if(modalBox_slide){
             modalBox_slide.classList.remove('modal-slide-show');
@@ -843,6 +1088,138 @@ document.body.addEventListener('click', (event) => {
     }
 });
 
+
+
+// Dropdown
+
+
+
+
+document.querySelectorAll(".dropdown-link").forEach((menu) => {
+  menu.addEventListener("click", function () {
+    const name = this.getAttribute("data-name");
+    const menucontent = document.getElementById(name);
+    menucontent.scrollHeight;
+    const Widthmenu = menucontent.scrollWidth;
+    const boxwidth = menu.scrollWidth;
+
+    let counts = 0;
+    menucontent.querySelectorAll("li").forEach((dropbox, index) => {
+      counts += 1;
+    });
+
+    if (menu.classList.contains("dropdown-active")) {
+      menu.classList.remove("dropdown-active");
+      menucontent.classList.remove("dropdown-show");
+       menucontent.style.height = "";
+      menucontent.style.width = "";
+      setTimeout(() => {
+      menucontent.classList.remove( "left-0", "right-0");
+       
+      }, 300);
+   
+    } else {
+      menu.classList.add("dropdown-active");
+      menucontent.classList.add("dropdown-show");
+      menucontent.style.height = 34 * counts + 20 + "px";
+
+      if (Widthmenu < boxwidth) {
+        menucontent.style.width = boxwidth + 20 + "px";
+      } else {
+        menucontent.style.width = Widthmenu + 20 + "px";
+      }
+
+      // ตรวจสอบตำแหน่งของ element
+      const rect = menu.getBoundingClientRect();
+      const windowWidth = window.innerWidth;
+
+      // ลบ class ก่อนเพิ่มใหม่
+      menucontent.classList.remove("left-0", "right-0");
+
+      if (rect.left < 100) {
+        // ใกล้ด้านซ้าย
+        menucontent.classList.add("left-0");
+      } else if (windowWidth - rect.right < 100) {
+        // ใกล้ด้านขวา
+        menucontent.classList.add("right-0");
+      }
+    }
+  });
+});
+
+// menudropdown
+
+document.querySelectorAll(".menu-dropdown").forEach((menu) => {
+        const icon = menu.getAttribute("data-icon");
+        if(icon){
+            if(icon == 'true'){
+                menu.classList.add('showicon');
+            }else {
+                menu.classList.remove('showicon');
+
+            }
+
+        }
+      
+
+        menu.addEventListener("click", function () {
+            let name = this.getAttribute("data-name"); // หรือ this.dataset.name
+            const menucontent = document.getElementById(name);
+            const heightmenu = menu.scrollHeight;
+
+            const isOpen = menucontent.classList.contains('show');
+            const showicon = menu.classList.contains('showicon');
+
+          
+
+                if (isOpen) {
+              
+                menucontent.classList.remove('show');
+                menu.style.height = '38px';
+
+                if(showicon){
+                menu.classList.remove('showiconup');
+                }
+                } else {
+                    menucontent.classList.add('show');
+                    menu.style.height = heightmenu + 'px';
+                    if(showicon){
+                        menu.classList.add('showiconup');
+                    }
+                }
+
+
+          
+        });
+      });
+
+
+
+      //slider
+
+       document.querySelectorAll('.slider').forEach((slider) => {            
+             const valueDisplay = slider.nextElementSibling;
+            const rootStyle = getComputedStyle(document.documentElement);
+            const mainColor = rootStyle.getPropertyValue('--main-color').trim();
+            const subColor = '#ffffff'; // หรือใช้ CSS var ได้เช่นกัน
+
+            function calcValue() {
+                const valuePercentage = (slider.value / slider.max) * 100;
+                slider.style.background = `linear-gradient(to right, ${mainColor} ${valuePercentage}%, ${subColor} ${valuePercentage}%)`;
+                if (valueDisplay) valueDisplay.textContent = slider.value;
+            }
+
+            // เรียกครั้งแรกเพื่อให้มี background ถูกต้องตอนโหลด
+            calcValue();
+
+            // ผูก event 'input' เพียงครั้งเดียว
+            slider.addEventListener('input', () => {
+                calcValue();
+            });
+
+
+        });
+
 const Wacoalui = {
     AlertBox: function (options) {
         return new AlertBox(options);
@@ -865,16 +1242,24 @@ const Wacoalui = {
     Tab: function (options) {
         return new Tab(options);
     },
-    Loading:function(options) {
+    Loading: function (options) {
         return new Loading(options);
     },
-    Notification:function(options){
+    Notification: function (options) {
         return new Notification(options);
-    }
-    ,Loadcss:function(options){
-      return new Loadcss(options);
-    }
-    
+    },
+    Loadcss: function (options) {
+        return new Loadcss(options);
+    },
+    Animate: function (options) {
+        return new Animate(options);
+    },
+    Slider: function (options) {
+        return new Slider(options);
+    },
+    Menuhide: function (options) {
+        return new Menuhide(options);
+    },
 };
 
 export { Wacoalui as default };
