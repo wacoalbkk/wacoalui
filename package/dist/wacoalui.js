@@ -1,7 +1,4 @@
-import '@/pages/docs/dropdown';
-
 class AlertBox {
-
  
     constructor({ title = "", text = "", type = "",position="", autoClose = "" ,buttonApprove="",buttonApproveText="",buttonClose="",buttonCloseText="",fade=""}) {
         this.title = title;
@@ -962,6 +959,10 @@ const animationDuration = 3000;
         document.querySelectorAll('.timer').forEach(el => {
             observer.observe(el);
         });
+
+//nav-bobile
+
+// import Dropdown from "@/pages/docs/dropdown";
 
 document.querySelectorAll(".nav-mobile-icon").forEach((menu) => {
     menu.addEventListener('click', () => {

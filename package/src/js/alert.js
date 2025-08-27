@@ -1,6 +1,5 @@
 
 class AlertBox {
-
  
     constructor({ title = "", text = "", type = "",position="", autoClose = "" ,buttonApprove="",buttonApproveText="",buttonClose="",buttonCloseText="",fade=""}) {
         this.title = title;

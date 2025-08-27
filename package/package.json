@@ -1,12 +1,13 @@
 {
   "name": "wacoalui",
-  "version": "1.0.36",
+  "version": "1.0.38",
   "description": "Reusable CSS for Wacoal Developer",
   "main": "dist/wacoalui.js",
   "bin": {
     "wacoalui-template-init": "./create-template.js"
   },
   "type": "module",
+  "types": "index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "create-template": "node create-template.js",

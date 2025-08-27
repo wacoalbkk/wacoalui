@@ -2,7 +2,7 @@
 
 //nav-bobile
 
-import Dropdown from "@/pages/docs/dropdown";
+// import Dropdown from "@/pages/docs/dropdown";
 
 document.querySelectorAll(".nav-mobile-icon").forEach((menu) => {
     menu.addEventListener('click', () => {
