@@ -12,6 +12,7 @@ import setColor from './js/setcolor.js';
 import Slider  from './js/slide.js';
 import Tab from './js/tab.js';
 import Menuhide from './js/menuhide.js';
+import Cookie from './js/cookie.js';
 
 import './animate_main.js';
 import './wacoal_main.js';
@@ -56,6 +57,10 @@ const Wacoalui = {
     Menuhide: function (options) {
         return new Menuhide(options);
     },
+     Cookie: function (options) {
+        return new Cookie(options);
+    }
+    
 };
 
 export default Wacoalui;

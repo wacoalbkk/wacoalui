@@ -1,6 +1,6 @@
 {
   "name": "wacoalui",
-  "version": "1.0.39",
+  "version": "1.0.47",
   "description": "Reusable CSS for Wacoal Developer",
   "main": "dist/wacoalui.js",
   "bin": {

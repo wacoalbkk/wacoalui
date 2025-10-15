@@ -1,5 +1,6 @@
 
 class AlertBox {
+
  
     constructor({ title = "", text = "", type = "",position="", autoClose = "" ,buttonApprove="",buttonApproveText="",buttonClose="",buttonCloseText="",fade=""}) {
         this.title = title;
@@ -142,22 +143,21 @@ class AlertBox {
             });
         }
 
-        if(this.buttonClose){
+         if(this.buttonClose){
             const closeButton = alertdata.querySelector('.alert-btn-close');
-            closeButton.addEventListener('click', () => {
+            closeButton.addEventListener('click', (e) => {
+                this.resolve({ event: e, action: 'close' });  // ทำให้ .then() ทำงาน
                 this.closeAlert(alertdata);
                 if(this.fade != 0){
                     alertfade[0].remove();
                 }
-
             });
         }
 
-
         if(this.buttonApprove){
             const okButton = alertdata.querySelector('.alert-btn-true');
-            okButton.addEventListener('click', () => {
-                this.resolve();  // ทำให้ .then() ทำงาน
+            okButton.addEventListener('click', (e) => {
+                this.resolve({ event: e, action: 'approve' });  // ทำให้ .then() ทำงาน
                 this.closeAlert(alertdata);  // ปิด AlertBox
                 if(this.fade != 0){
                     alertfade[0].remove();
