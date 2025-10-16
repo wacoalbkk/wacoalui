@@ -553,29 +553,78 @@ class SetLoading {
     }
 }
 
+async function getLoadingIcon(icon) {
+    
+  try {
+    const response = await fetch('https://wacoalui.wacoal.co.th/api/loading/icon/'+icon);
+    
+    if (!response.ok) {
+      console.error('HTTP Error:', response);
+      return 'Error';
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Network Error:', error);
+    return 'Error';
+  }
+}
+
 class Loading {
 
-    constructor({show = ""}) {
-        this.show = show || false;
-        this.createLoading();
+    constructor({EventpageLoad = "",LoadIcon = "",ScrollLock="" }) {  
+        this.EventpageLoad = EventpageLoad || 'false';
+        this.LoadIcon = LoadIcon || 'spinner-basic';
+        this.ScrollLock = ScrollLock || 'false';
+
+        this.createSetLoading();
     }
 
-    createLoading() {
-       
-        if(this.show){
-            document.querySelectorAll(".load_wrap").forEach((load,index) => {
-                if(index == 0){
-                    load.classList.add('load_show');
-                }
-            });
 
+    async createSetLoading() {
+        // รอให้โหลด icon เสร็จก่อน
+        const icondata = await getLoadingIcon(this.LoadIcon);
+
+        // สร้าง element
+        const div = document.createElement("div");
+        const icon = document.createElement("div");
+
+        div.classList.add('load_wrap');
+        
+
+        // ถ้ามี html จาก API เช่น <div class="spinner-basic"></div>
+        if (icondata && icondata.icon.htmlcode) {
+            icon.innerHTML = icondata.icon.htmlcode;
         }else {
-            document.querySelectorAll(".load_wrap").forEach((load,index) => {
-                load.classList.remove('load_show');
-
-            });
+            icon.innerHTML = `<div class="spinner-basic"></div>`;
         }
-    }
+
+        
+
+        div.appendChild(icon);
+        document.body.appendChild(div);
+        if(this.ScrollLock){
+          document.body.classList.add('overflow-hidden');
+        }else {
+          document.body.classList.remove('overflow-hidden');
+
+        }
+
+        // แสดง/ซ่อนตาม EventpageLoad
+        if (this.EventpageLoad) {
+            document.querySelectorAll(".load_wrap").forEach((load, index) => {
+            if (index === 0) {
+                load.classList.add('load_show');
+            }
+            });
+        } else {
+            document.querySelectorAll(".load_wrap").forEach(load => {
+            load.classList.remove('load_show');
+            });cd;
+        }
+        }
 }
 
 class MenuDropdown {
@@ -879,260 +928,185 @@ class Menuhide {
     }
 }
 
+const langLocal = localStorage.getItem('lang') || 'en';
+const LangEN =  `
+        <div class="webAcceptCookieBarShell">
+          <p style="max-width:1024px; margin-bottom: 15px;">
+           Cookies are used on this site. To provide you a better experience on our services. If you use our website as is with no changes to your settings. 
+           We recognize that by using our website, you consent to receiving cookies.
+            <a href="http://corporate.wacoal.co.th/privacy/policy_en.pdf" target="_blank" rel="noopener">
+              Read More
+            </a>
+          </p>
+          <button type="button" class="acceptBtn">Accept</button>
+        </div>
+      `;
+const LangTH = `
+        <div class="webAcceptCookieBarShell">
+          <p style="max-width:1070px; margin-bottom: 15px;">
+            เราให้ความสำคัญต่อข้อมูลส่วนบุคคลของท่าน
+            หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใด ๆ
+            แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ของเรา
+            <a href="http://corporate.wacoal.co.th/privacy/policy_th.pdf" target="_blank" rel="noopener">
+              อ่านเพิ่มเติม
+            </a>
+          </p>
+          <button type="button" class="acceptBtn">ยอมรับ</button>
+        </div>
+      `;
+
+
 class Cookie {
 
 
+
     constructor() {
-        const script = document.createElement('script'); // สร้าง element script
-        script.src = './cdncookie.js';  // ใส่ src
-        // script.src = ' https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@3.0.1/dist/cookieconsent.umd.js';  // ใส่ src
-        script.async = true;                             // โหลดแบบ async (ไม่บังคับ)
-        document.body.appendChild(script);  
+      this.cookieName = "webAcceptCookie";
+        this.theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+      this.init();
+ 
+
         
-        setTimeout(() => {
-           this.createCookie();
-        }, 50);
     }
 
-    createCookie() {
-        /**
-         * All config. options available here:
-         * https://cookieconsent.orestbida.com/reference/configuration-reference.html
-         */
+    init() {
+        
+      if (!this.readCookie(this.cookieName)) {
+        this.injectStyles();
+        this.renderBar();
+      }
 
-        CookieConsent.run({
-            categories: {
-                necessary: {
-                    enabled: true,  // this category is enabled by default
-                    readOnly: true  // this category cannot be disabled
-                },
-                analytics: {}
-            },
-
-            guiOptions: {
-                consentModal: {
-                    layout: 'cloud',
-                    position: 'bottom center',
-                    flipButtons: false,
-                    equalWeightButtons: true
-                },
-                preferencesModal: {
-                    layout: 'box',
-                    // position: 'left right',
-                    flipButtons: false,
-                    equalWeightButtons: true
-                }
-            },
-
-            language: {
-                default: 'th',
-                translations: {
-                    'en': {
-                        consentModal: {
-                            title: "Cookies are used on this site",
-                            description: "To provide you a better experience on our services. If you use our website as is with no changes to your settings. We recognize that by using our website, you consent to receiving cookies. <a href='https://corporate.wacoal.co.th/privacy/policy_en.pdf' target='_blank'>Read More</a>",
-                            acceptAllBtn: "Accept All",
-                            acceptNecessaryBtn: "Reject All",
-                            showPreferencesBtn: "Manage Preferences"
-                        },
-                        preferencesModal: {
-                            title: "Manage Cookie Preferences",
-                            acceptAllBtn: "Accept All",
-                            acceptNecessaryBtn: "Reject All",
-                            savePreferencesBtn: 'Accept Current Selection',
-                            closeIconLabel: "Close",
-                            sections: [
-                                {
-                                    title: "Privacy Policy",
-                                    description: "To provide you a better experience on our services. If you use our website as is with no changes to your settings. We recognize that by using our website, you consent to receiving cookies. <a href='https://corporate.wacoal.co.th/privacy/policy_en.pdf' target='_blank'>Read More</a>"
-                                },
-                                {
-                                    title: "Strictly Necessary Cookies",
-                                    description: "Necessary cookies are required to help a website usable by enabling core functions and access to secure areas of the website. The website cannot be function properly without these cookies and they are enabled by default and cannot be disabled.",
-                                    linkedCategory: "necessary"
-                                },
-                                {
-                                    title: "Performance and Analytics Cookies",
-                                    description: "Analytics cookies help website to understand how visitors interact through the website. These cookies help to improve user experiences by collecting and reporting information.",
-                                    linkedCategory: "analytics",
-                                    cookieTable: {
-                                        headers: {
-                                            name: "Name",
-                                            domain: "Service",
-                                            description: "Description",
-                                            expiration: "Expiration"
-                                        },
-                                        body: [
-                                            {
-                                                name: "_ga",
-                                                domain: "Google Analytics",
-                                                description: "Cookie set by Google Analytics",
-                                                expiration: "12 months"
-                                            },
-                                            {
-                                                name: "_gid",
-                                                domain: "Google Analytics",
-                                                description: "Cookie set by Google Analytics",
-                                                expiration: "Session"
-                                            },
-                                            {
-                                                name: "AEC",
-                                                domain: "Google Map",
-                                                description: "Cookie set by Google Map",
-                                                expiration: "6 months"
-                                            },
-                                            {
-                                                name: "IDE",
-                                                domain: "doubleclick.net",
-                                                description: "Cookie set by doubleclick.net",
-                                                expiration: "1 month"
-                                            },
-                                            {
-                                                name: "DV",
-                                                domain: "Google Map",
-                                                description: "Cookie set by Google Map",
-                                                expiration: "1 day"
-                                            },
-                                            {
-                                                name: "NID",
-                                                domain: "Google Map",
-                                                description: "Cookie set by Google Map",
-                                                expiration: "6 months"
-                                            },
-                                            {
-                                                name: "VISITOR_INFO1_LIVE",
-                                                domain: "Youtube",
-                                                description: "Cookie set by Youtube",
-                                                expiration: "6 months"
-                                            },
-                                            {
-                                                name: "VISITOR_PRIVACY_METADATA",
-                                                domain: "Youtube",
-                                                description: "Cookie set by Youtube",
-                                                expiration: "6 months"
-                                            },
-                                            {
-                                                name: "YSC",
-                                                domain: "Youtube",
-                                                description: "Cookie set by Youtube",
-                                                expiration: "Session"
-                                            }
-                                        ]
-                                    }
-                                },
-                                // {
-                                //     title: "More information",
-                                //     description: "For any queries in relation to our policy on cookies and your choices, please <a class=\"cc-link\" href=\"#yourdomain.com\">contact us</a>."
-                                // }
-                            ]
-                        }
-                    },
-                    'th': {
-                        consentModal: {
-                            title: "เว็บไซต์นี้มีการใช้งานคุ้กกี้",
-                            description: "เราให้ความสำคัญต่อข้อมูลส่วนบุคคลของท่าน หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใดๆ แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ของเรา <a href='https://corporate.wacoal.co.th/privacy/policy_th.pdf' target='_blank'>อ่านเพิ่มเติม</a>",
-                            acceptAllBtn: "ยอมรับทั้งหมด",
-                            acceptNecessaryBtn: "ปฏิเสธทั้งหมด",
-                            showPreferencesBtn: "การตั้งค่าคุ้กกี้"
-                        },
-                        preferencesModal: {
-                            title: "การตั้งค่าความเป็นส่วนตัว",
-                            acceptAllBtn: "ยอมรับทั้งหมด",
-                            acceptNecessaryBtn: "ปฏิเสธทั้งหมด",
-                            savePreferencesBtn: 'ยืนยันตัวเลือกของฉัน',
-                            closeIconLabel: "ปิด",
-                            sections: [
-                                {
-                                    title: "นโยบายความเป็นส่วนตัว",
-                                    description: "เราให้ความสำคัญต่อข้อมูลส่วนบุคคลของท่าน หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใดๆ แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ของเรา <a href='https://corporate.wacoal.co.th/privacy/policy_th.pdf' target='_blank'>อ่านเพิ่มเติม</a>"
-                                },
-                                {
-                                    title: "คุกกี้พื้นฐานที่จำเป็น",
-                                    description: "คุกกี้พื้นฐานที่จำเป็น เพื่อช่วยให้การทำงานหลักของเว็บไซต์ใช้งานได้ รวมถึงการเข้าถึงพื้นที่ที่ปลอดภัยต่าง ๆ ของเว็บไซต์ หากไม่มีคุกกี้นี้เว็บไซต์จะไม่สามารถทำงานได้อย่างเหมาะสม และจะใช้งานได้โดยการตั้งค่าเริ่มต้น โดยไม่สามารถปิดการใช้งานได้",
-                                    linkedCategory: "necessary"
-                                },
-                                {
-                                    title: "คุกกี้ในส่วนวิเคราะห์",
-                                    description: "คุกกี้ในส่วนวิเคราะห์ จะช่วยให้เว็บไซต์เข้าใจรูปแบบการใช้งานของผู้เข้าชมและจะช่วยปรับปรุงประสบการณ์การใช้งาน โดยการเก็บรวบรวมข้อมูลและรายงานผลการใช้งานของผู้ใช้งาน",
-                                    linkedCategory: "analytics",
-                                    cookieTable: {
-                                        headers: {
-                                            name: "Name",
-                                            domain: "Service",
-                                            description: "Description",
-                                            expiration: "Expiration"
-                                        },
-                                        body: [
-                                            {
-                                                name: "_ga",
-                                                domain: "Google Analytics",
-                                                description: "Cookie set by Google Analytics",
-                                                expiration: "12 เดือน"
-                                            },
-                                            {
-                                                name: "_gid",
-                                                domain: "Google Analytics",
-                                                description: "Cookie set by Google Analytics",
-                                                expiration: "Session"
-                                            },
-                                            {
-                                                name: "AEC",
-                                                domain: "Google Map",
-                                                description: "Cookie set by Google Map",
-                                                expiration: "6 เดือน"
-                                            },
-                                            {
-                                                name: "IDE",
-                                                domain: "doubleclick.net",
-                                                description: "Cookie set by doubleclick.net",
-                                                expiration: "1 เดือน"
-                                            },
-                                            {
-                                                name: "DV",
-                                                domain: "Google Map",
-                                                description: "Cookie set by Google Map",
-                                                expiration: "1 วัน"
-                                            },
-                                            {
-                                                name: "NID",
-                                                domain: "Google Map",
-                                                description: "Cookie set by Google Map",
-                                                expiration: "6 เดือน"
-                                            },
-                                            {
-                                                name: "VISITOR_INFO1_LIVE",
-                                                domain: "Youtube",
-                                                description: "Cookie set by Youtube",
-                                                expiration: "6 เดือน"
-                                            },
-                                            {
-                                                name: "VISITOR_PRIVACY_METADATA",
-                                                domain: "Youtube",
-                                                description: "Cookie set by Youtube",
-                                                expiration: "6 เดือน"
-                                            },
-                                            {
-                                                name: "YSC",
-                                                domain: "Youtube",
-                                                description: "Cookie set by Youtube",
-                                                expiration: "Session"
-                                            }
-                                        ]
-                                    }
-                                },
-                                // {
-                                //     title: "More information",
-                                //     description: "For any queries in relation to our policy on cookies and your choices, please <a class=\"cc-link\" href=\"#yourdomain.com\">contact us</a>."
-                                // }
-                            ]
-                        }
-                    }
-                }
-            }
+      const clearBtn = document.querySelector(".pjClearCookie");
+      if (clearBtn) {
+        clearBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          this.eraseCookie(this.cookieName);
+          location.reload();
         });
+      }
     }
 
-}
+    // ✅ Cookie Functions
+    createCookie(name, value, days = 365) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Lax`;
+    }
+
+    readCookie(name) {
+      const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+      return match ? match[2] : null;
+    }
+
+    eraseCookie(name) {
+      this.createCookie(name, "", -1);
+    }
+
+    // ✅ Inject CSS + Theme + Animation
+    injectStyles() {
+      if (document.getElementById("webAcceptCookieCss")) return;
+
+      const link = document.createElement("link");
+      link.id = "webAcceptCookieCss";
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Manrope:wght@600&family=Prompt&display=swap";
+      document.head.appendChild(link);
+
+      const style = document.createElement("style");
+      style.textContent = `
+        /* Common Styles */
+        #webAcceptCookieBar {
+          position: fixed;
+          bottom: 0; left: 0; right: 0;
+          width: 100%; padding: 15px 0;
+          font-family: 'Prompt', sans-serif;
+          text-align: center;
+          opacity: 0; transform: translateY(100%);
+          transition: transform 0.5s ease, opacity 0.5s ease;
+          z-index: 9999;
+          display: flex; justify-content: center;
+        }
+
+        #webAcceptCookieBar.show {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        #webAcceptCookieBar p {
+          font-size: 16px; line-height: 1.5; margin: 0 10px;
+        }
+
+        #webAcceptCookieBar a {
+          text-decoration: underline; transition: color 0.3s;
+        }
+
+        #webAcceptCookieBar button {
+          font-family: 'Prompt', sans-serif;
+          padding: 8px 24px; margin-left: 15px;
+          border-radius: 25px; border: none; cursor: pointer;
+          transition: background 0.3s, transform 0.3s;
+        }
+
+        #webAcceptCookieBar button:hover {
+          transform: scale(1.05);
+        }
+
+        /* Themes */
+        #webAcceptCookieBar.dark {
+          background-color: rgba(0,0,0,0.85);
+          color: #fff;
+          backdrop-filter: blur(5px);
+        }
+        #webAcceptCookieBar.dark a { color: #ffd700; }
+        #webAcceptCookieBar.dark button { background-color: #737373; color: #fff; }
+        #webAcceptCookieBar.dark button:hover { background-color: #656363; }
+
+        #webAcceptCookieBar.light {
+          background-color: rgba(255,255,255,0.85);
+          color: #333;
+          backdrop-filter: blur(5px);
+        }
+        #webAcceptCookieBar.light a { color: #217dacff; }
+        #webAcceptCookieBar.light button { background-color: #90a4ae; color: #fff; }
+        #webAcceptCookieBar.light button:hover { background-color: #8699a3; }
+
+        /* Responsive */
+        @media (max-width: 767px) {
+          #webAcceptCookieBar p { font-size: 14px; }
+          #webAcceptCookieBar button { margin-top: 10px; margin-left: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // ✅ Render HTML Bar
+    renderBar() {
+      const bar = document.createElement("div");
+      bar.id = "webAcceptCookieBar";
+      bar.classList.add(this.theme);
+      bar.innerHTML = langLocal == 'th'?LangTH:LangEN;
+      document.body.appendChild(bar);
+
+      // แสดงด้วย animation
+      setTimeout(() => bar.classList.add("show"), 50);
+
+      this.bindEvents();
+    }
+
+    bindEvents() {
+      const acceptBtn = document.querySelector("#webAcceptCookieBar .acceptBtn");
+      const bar = document.getElementById("webAcceptCookieBar");
+      if (acceptBtn && bar) {
+        acceptBtn.addEventListener("click", () => {
+          this.createCookie(this.cookieName, "YES", 365);
+          bar.classList.remove("show");
+          setTimeout(() => bar.remove(), 500); // รอ animation จบ
+        });
+      }
+    }
+  }
 
 const animationDuration = 3000;
         const frameDuration = 1000 / 60;
