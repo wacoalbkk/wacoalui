@@ -930,7 +930,7 @@ class Menuhide {
     }
 }
 
-const langLocal = localStorage.getItem('lang') || 'en';
+const langLocal = localStorage.getItem('lang') || 'th';
 const LangEN =  `
         <div class="webAcceptCookieBarShell">
           <p style="max-width:1024px; margin-bottom: 15px;">
