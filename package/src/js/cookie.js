@@ -7,7 +7,7 @@ const LangEN =  `
           <p style="max-width:1024px; margin-bottom: 15px;">
            Cookies are used on this site. To provide you a better experience on our services. If you use our website as is with no changes to your settings. 
            We recognize that by using our website, you consent to receiving cookies.
-            <a href="http://corporate.wacoal.co.th/privacy/policy_en.pdf" target="_blank" rel="noopener">
+           <a href="https://corporate.wacoal.co.th/privacy_en" target="_blank" rel="noopener">
               Read More
             </a>
           </p>
@@ -20,7 +20,7 @@ const LangTH = `
             เราให้ความสำคัญต่อข้อมูลส่วนบุคคลของท่าน
             หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใด ๆ
             แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ของเรา
-            <a href="http://corporate.wacoal.co.th/privacy/policy_th.pdf" target="_blank" rel="noopener">
+            <a href="https://corporate.wacoal.co.th/privacy_th" target="_blank" rel="noopener">
               อ่านเพิ่มเติม
             </a>
           </p>

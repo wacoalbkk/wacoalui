@@ -1,6 +1,6 @@
 {
   "name": "wacoalui",
-  "version": "1.0.55",
+  "version": "1.0.59",
   "description": "Reusable CSS for Wacoal Developer",
   "main": "dist/wacoalui.js",
   "bin": {
@@ -19,8 +19,5 @@
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.1",
     "rollup": "^4.40.2"
-  },
-  "dependencies": {
-    "wacoalui": "^1.0.35"
   }
 }

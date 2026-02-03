@@ -20,17 +20,18 @@ async function getLoadingIcon(icon) {
 
 class Loading {
 
-    constructor({EventpageLoad = "",LoadIcon = "",ScrollLock="" }) {  
-        this.EventpageLoad = EventpageLoad || 'false';
+    constructor({EventpageLoad = false ,LoadIcon = "",ScrollLock=false }) {  
+        this.EventpageLoad = Boolean(EventpageLoad);
         this.LoadIcon = LoadIcon || 'spinner-basic';
-        this.ScrollLock = ScrollLock || 'false';
-
+        this.ScrollLock = Boolean(ScrollLock) ;
         this.createSetLoading();
     }
 
 
     async createSetLoading() {
         // รอให้โหลด icon เสร็จก่อน
+
+        
         const icondata = await getLoadingIcon(this.LoadIcon);
 
         // สร้าง element
@@ -59,7 +60,8 @@ class Loading {
         }
 
         // แสดง/ซ่อนตาม EventpageLoad
-        if (this.EventpageLoad) {
+        
+        if (Boolean(this.EventpageLoad)) {
             document.querySelectorAll(".load_wrap").forEach((load, index) => {
             if (index === 0) {
                 load.classList.add('load_show');
@@ -67,8 +69,8 @@ class Loading {
             });
         } else {
             document.querySelectorAll(".load_wrap").forEach(load => {
-            load.classList.remove('load_show');
-            });cd
+            load.classList.remove('load_show');                        
+            });
         }
         }
 }

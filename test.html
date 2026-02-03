@@ -12,6 +12,11 @@
       import Wacoalui from './package/dist/wacoalui.js';
         console.log(Wacoalui); // ดูว่าใน class / object มีอะไรบ้าง
         Wacoalui.Loading({EventpageLoad:true,LoadIcon:'spinner-cube',ScrollLock:false})
+        setTimeout(() => {
+        Wacoalui.Loading({EventpageLoad:false})
+        console.log('false page');
+        
+        }, 1000);
     </script>
 </body >
 </html>
